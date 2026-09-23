@@ -1,0 +1,6 @@
+# Data manifests and run records are hashed byte-for-byte (docs/protocol.md, the freeze record, and
+# the manifest guard in scripts/score.py and scripts/evaluate.py). Several were written with CRLF line
+# endings on Windows, so store them exactly as written; line-ending conversion would change the hashes.
+*.csv -text
+*.json -text
+*.jsonl -text
