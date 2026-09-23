@@ -1,4 +1,4 @@
-"""Stage 6: selection and rejection rules (master plan section 7).
+"""Stage 6: selection and rejection rules.
 
 All rules read the same cached per-candidate scores and differ only in how they pick a candidate and
 whether they may decline:

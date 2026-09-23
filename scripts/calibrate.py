@@ -1,20 +1,20 @@
-"""Calibrate S1/S2 on the calibration blocks, freeze the thresholds, and report calibration metrics.
+"""Replay calibration with corrected family weighting, preserving the original freeze.
 
     uv run python scripts/calibrate.py
     uv run python scripts/calibrate.py --arm appearance    # a predeclared sensitivity arm
 
-An arm is calibrated inside the arm and written under results/arms/<arm>/. It never writes the
-primary freeze record, so it can never unlock or alter the test pass; its trigger line is descriptive.
+This script writes under results/replays/calibration/. These thresholds were recalculated
+after the original test was known, so they cannot unlock or alter the historical test pass.
+For the complete offline corrected report, use scripts/reanalyze.py instead.
 
 Declared 23 September 2026, before any calibration block was scored:
 
-  Appearance-arm trigger (protocol.md section 7, made operational here). The red/green appearance
+  Appearance-arm trigger (declared with the frozen configuration, made operational here). The red/green appearance
   arm runs if, on the calibration blocks, neither ungated selector (B0 or U0) has a 95% family-
   bootstrap lower bound for mate-present/easy top-1 above 1/3, the chance rate with K = 3.
 
-Writes results/freeze/freeze_record.json (thresholds, procedure, configuration and manifest hashes),
-results/tables/calib_metrics.csv and results/figures/calib_risk_coverage.png. Test-split numbers are
-never computed here. The calibration numbers for S1 and S2 are in-sample by construction.
+Writes separate replay records, tables and figures. Test-split numbers are never computed here.
+The calibration numbers for S1 and S2 are in-sample by construction.
 """
 
 import argparse
@@ -39,7 +39,8 @@ from wncf.rules import METHODS
 from wncf.splits import EXPOSED_FAMILIES
 
 BLOCKS = REPO_ROOT / "data" / "candidate_sets" / "blocks.csv"
-FREEZE = REPO_ROOT / "results" / "freeze" / "freeze_record.json"
+REPLAY = REPO_ROOT / "results" / "replays" / "calibration"
+FREEZE = REPLAY / "primary" / "calibration_record.json"
 CHANCE_TOP1 = 1 / 3
 BOOT_N = 1000
 
@@ -55,7 +56,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--arm", choices=sorted(ARM_OVERRIDES))
     arm = ap.parse_args().arm
-    arm_dir = REPO_ROOT / "results" / "arms" / arm if arm else None
+    arm_dir = REPLAY / arm if arm else None
     queries = load_queries(set(ARM_SPLITS) if arm else {"calib"}, arm)
     s1_tau = calibrate_s1(queries)
     s2_tau, s2_delta = calibrate_s2(queries, s1_tau)
@@ -84,8 +85,8 @@ def main():
             cis[method, metric] = bootstrap_by_family(queries, method, metric, n=BOOT_N, **params[method])
 
     record_path = arm_dir / "arm_calibration_record.json" if arm else FREEZE
-    table_path = arm_dir / "calib_metrics.csv" if arm else REPO_ROOT / "results" / "tables" / "calib_metrics.csv"
-    fig_path = arm_dir / "calib_risk_coverage.png" if arm else REPO_ROOT / "results" / "figures" / "calib_risk_coverage.png"
+    table_path = (arm_dir or FREEZE.parent) / "calib_metrics.csv"
+    fig_path = (arm_dir or FREEZE.parent) / "calib_risk_coverage.png"
     write_freeze(queries, params, trigger, fires, record_path, arm)
     write_table(rows, table_path)
     figure(queries, s2_delta, params, fig_path, arm)
@@ -95,6 +96,8 @@ def main():
 def write_freeze(queries, params, trigger, fires, path, arm):
     reached = {m: (evaluate(queries, m, **params[m])["present_coverage"] or 0) >= COVERAGE_TARGET for m in ("S1", "S2")}
     record = {
+        "status": "post-hoc family-balanced calibration replay; never authorizes historical test scoring",
+        "weighting": "family",
         "frozen_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "arm": arm, "primary": arm is None,
         "config": {**arm_config(arm), "views": list(FROZEN["views"]), **frozen_identity(arm),
@@ -119,7 +122,7 @@ def write_freeze(queries, params, trigger, fires, path, arm):
         },
     }
     if arm is None:
-        # only the primary record carries the manifest hash that unlocks the test split
+        # This identifies the replay inputs; replay records do not authorize historical test scoring.
         record["blocks_sha256"] = file_sha(BLOCKS)
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(record, indent=2), encoding="utf-8")

@@ -1,4 +1,4 @@
-"""Aperture series (master plan RQ3) on the calibration and test families, frozen configuration.
+"""Aperture series on the calibration and test families, frozen configuration.
 
     uv run python scripts/aperture_series.py build
     uv run python scripts/score.py --split calib --manifest data/aperture/pairs.csv
@@ -11,9 +11,12 @@ The ladder is the one the dev sanity check used, fixed before any calibration or
 and the thresholds come from the freeze record; nothing here is fitted. The summary statistics were
 chosen when this script was written, after the core test pass, so they are descriptive.
 
-The report shows the model's p_yes and its acceptance (answer Yes; p_yes at or above the frozen S1
-threshold) against the oracle's measured margin, per split, and runs the image-only containment
-control on the same images as the positive check that the size change is visible in the pixels.
+This historical report shows the model's p_yes and its acceptance (answer Yes; p_yes at or above
+the frozen S1 threshold) against the construction offset, per split. The measured margin is stored
+separately and can differ substantially from that offset. The image-only containment control checks
+that the size change is visible in the pixels. For the corrected measured-margin analysis, including
+censoring and observed threshold transitions, run scripts/analyze_aperture.py; it writes separate
+outputs under results/corrected/aperture and leaves this report's historical artifacts unchanged.
 """
 
 import csv

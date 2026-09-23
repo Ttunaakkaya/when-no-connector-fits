@@ -12,6 +12,8 @@ cache/*
 *.log
 .DS_Store
 Thumbs.db
+tmp/
+results/replays/
 
 # derived from data/parts/catalog.csv by scripts/make_parts.py
 data/parts/meshes/

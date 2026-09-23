@@ -1,0 +1,176 @@
+{
+  "analysis": "descriptive correction; saved scores, unchanged labels and frozen single-pair threshold",
+  "frozen_s1_tau": 0.787984976280714,
+  "threshold_comparison": "p_yes >= tau",
+  "unit": "one peg paired with one aperture rung; not a three-candidate selection query",
+  "n_pairs": 399,
+  "n_pegs": 57,
+  "labels": {
+    "compatible": 114,
+    "ambiguous": 109,
+    "incompatible": 176
+  },
+  "n_binary_labelled": 290,
+  "n_ambiguous": 109,
+  "ambiguity_reasons": {
+    "boundary": 57,
+    "off_centre": 52
+  },
+  "n_left_censored": 12,
+  "censoring": "A saved margin of -2 mm means true margin <= -2 mm; do not treat it as exact or average it.",
+  "binary_metrics": "Ambiguous rows are excluded; they remain visible in the score and gate-response plots.",
+  "uncertainty": {
+    "method": "Percentile bootstrap of entire query families; all pegs and rungs within a family travel together.",
+    "weighting": "Each family has total weight one before accepted and label counts are divided; raw counts also reported.",
+    "repetitions": 2000,
+    "seed": 20260923,
+    "limitations": "Descriptive intervals from seven families per split; repeated rungs are not independent trials. Conditional on these templates, renders and the frozen threshold; no fresh confirmatory test."
+  },
+  "transitions": "Observed adjacent ladder samples bracket threshold changes; no interpolated crossing point. Score rises/falls use only strictly increasing, uncensored measured-margin steps; tolerance 1e-12.",
+  "splits": {
+    "calib": {
+      "n_pairs": 196,
+      "n_pegs": 28,
+      "n_families": 7,
+      "labels": {
+        "compatible": 56,
+        "ambiguous": 56,
+        "incompatible": 84
+      },
+      "n_left_censored": 8,
+      "compatible_retention_tau": {
+        "accepted": 20,
+        "n": 56,
+        "raw_rate": 0.35714285714285715,
+        "family_balanced_rate": 0.40357142857142864,
+        "family_bootstrap_95_percentile_interval": [
+          0.22380952380952385,
+          0.6191666666666662
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "incompatible_acceptance_tau": {
+        "accepted": 28,
+        "n": 84,
+        "raw_rate": 0.3333333333333333,
+        "family_balanced_rate": 0.39682539682539686,
+        "family_bootstrap_95_percentile_interval": [
+          0.15853174603174605,
+          0.6587301587301588
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "compatible_yes_rate": {
+        "accepted": 56,
+        "n": 56,
+        "raw_rate": 1.0,
+        "family_balanced_rate": 1.0,
+        "family_bootstrap_95_percentile_interval": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "incompatible_yes_rate": {
+        "accepted": 84,
+        "n": 84,
+        "raw_rate": 1.0,
+        "family_balanced_rate": 1.0,
+        "family_bootstrap_95_percentile_interval": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "pooled_auroc_p_yes_descriptive": 0.5620748299319728,
+      "image_control": {
+        "agree": 140,
+        "n_binary_labelled": 140
+      },
+      "tau_response_pegs": {
+        "one_observed_transition": 7,
+        "always_rejects": 11,
+        "multiple_observed_transitions": 5,
+        "always_accepts": 5
+      },
+      "pegs_nonmonotonic_on_resolved_steps": 26,
+      "pegs_violating_nondecreasing_response": 26,
+      "unresolved_margin_steps": 8
+    },
+    "test": {
+      "n_pairs": 203,
+      "n_pegs": 29,
+      "n_families": 7,
+      "labels": {
+        "compatible": 58,
+        "ambiguous": 53,
+        "incompatible": 92
+      },
+      "n_left_censored": 4,
+      "compatible_retention_tau": {
+        "accepted": 50,
+        "n": 58,
+        "raw_rate": 0.8620689655172413,
+        "family_balanced_rate": 0.8571428571428572,
+        "family_bootstrap_95_percentile_interval": [
+          0.5714285714285715,
+          1.0
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "incompatible_acceptance_tau": {
+        "accepted": 80,
+        "n": 92,
+        "raw_rate": 0.8695652173913043,
+        "family_balanced_rate": 0.8648648648648648,
+        "family_bootstrap_95_percentile_interval": [
+          0.5754716981132076,
+          1.0
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "compatible_yes_rate": {
+        "accepted": 58,
+        "n": 58,
+        "raw_rate": 1.0,
+        "family_balanced_rate": 1.0,
+        "family_bootstrap_95_percentile_interval": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "incompatible_yes_rate": {
+        "accepted": 92,
+        "n": 92,
+        "raw_rate": 1.0,
+        "family_balanced_rate": 1.0,
+        "family_bootstrap_95_percentile_interval": [
+          1.0,
+          1.0
+        ],
+        "bootstrap_replicates_with_defined_rate": 2000,
+        "n_families": 7
+      },
+      "pooled_auroc_p_yes_descriptive": 0.4992503748125937,
+      "image_control": {
+        "agree": 150,
+        "n_binary_labelled": 150
+      },
+      "tau_response_pegs": {
+        "always_rejects": 4,
+        "always_accepts": 25
+      },
+      "pegs_nonmonotonic_on_resolved_steps": 29,
+      "pegs_violating_nondecreasing_response": 29,
+      "unresolved_margin_steps": 4
+    }
+  }
+}

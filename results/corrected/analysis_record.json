@@ -1,0 +1,421 @@
+{
+  "status": "corrective reanalysis of historical scores after test inspection; not a new held-out experiment",
+  "command": "uv run python scripts/reanalyze.py --bootstrap 2000",
+  "score_source": "audited results/scores/scores.jsonl snapshot; zero new model calls",
+  "weighting": "family",
+  "weighting_definition": "Each family contributes unit total weight, divided equally among its observed regimes and then among queries in each family/regime cell. Rates divide weighted count sums. Unprefixed counts are raw integers; weighted_* fields are weighted sums, not object counts.",
+  "bootstrap": {
+    "resamples": 2000,
+    "seed": 20260924,
+    "unit": "query family, with draw multiplicity"
+  },
+  "limitations": [
+    "Corrective reanalysis after the historical test results were known; no new held-out evidence.",
+    "original_thresholds keeps historical thresholds unchanged; posthoc_thresholds refits on calibration only.",
+    "Calibration results and their fixed-threshold intervals are in-sample, not cross-validated.",
+    "Intervals resample query families and retain draw multiplicities, conditional on the fixed shared distractor pool.",
+    "Seven test families and diagnostic template exposure limit generalization; exposed/unexposed groups differ in shape.",
+    "B1 is a unique-Yes decision rule: its top-1 value and interval are undefined.",
+    "Test risk-coverage curves are descriptive sweeps, never a source of new operating points."
+  ],
+  "historical_replay": [
+    {
+      "path": "results/tables/calib_metrics.csv",
+      "checks": 684,
+      "matches": true,
+      "excluded_obsolete_metrics": [
+        "B1 top1_present",
+        "B1 top1_present_ci95"
+      ]
+    },
+    {
+      "path": "results/test/test_metrics.csv",
+      "checks": 756,
+      "matches": true,
+      "excluded_obsolete_metrics": [
+        "B1 top1_present",
+        "B1 top1_present_ci95"
+      ]
+    },
+    {
+      "path": "results/arms/appearance/calib_metrics.csv",
+      "checks": 684,
+      "matches": true,
+      "excluded_obsolete_metrics": [
+        "B1 top1_present",
+        "B1 top1_present_ci95"
+      ]
+    },
+    {
+      "path": "results/arms/int8/calib_metrics.csv",
+      "checks": 684,
+      "matches": true,
+      "excluded_obsolete_metrics": [
+        "B1 top1_present",
+        "B1 top1_present_ci95"
+      ]
+    },
+    {
+      "path": "results/arms/prompt/calib_metrics.csv",
+      "checks": 684,
+      "matches": true,
+      "excluded_obsolete_metrics": [
+        "B1 top1_present",
+        "B1 top1_present_ci95"
+      ]
+    },
+    {
+      "path": "results/exploratory/prompt_test/test_metrics.csv",
+      "checks": 756,
+      "matches": true,
+      "excluded_obsolete_metrics": [
+        "B1 top1_present",
+        "B1 top1_present_ci95"
+      ]
+    }
+  ],
+  "input_sha256": {
+    "data/candidate_sets/blocks.csv": "c507298eedb13aa473fc9a8ae65225e90d8e368e54fd1fef358067180106a228",
+    "data/candidate_sets/candidates.csv": "5399b3101b9d4173e04f3e2570215277e21b0552826d9c086709c4ac5e33732c",
+    "data/parts/compat.csv": "c24f352d42ff18c184fca143594bb11ffc5081e8d966372d76a157a46125231f",
+    "results/arms/appearance/arm_calibration_record.json": "55e42faae7015200cbbd92990de19d4f3303cf0ae6f929f8c4cf4ca6f22c6bb8",
+    "results/arms/appearance/calib_metrics.csv": "d9ee8da06d8d7b8cad903c9acf3b976a1f54b87fcbb01c2c9c1a863354a43990",
+    "results/arms/int8/arm_calibration_record.json": "44b6756c6b814d4d954be55b1ccaee8e8e423973aa9d2cc5e8c3cea8bb988523",
+    "results/arms/int8/calib_metrics.csv": "ec98f8df96ad3cefb6d8dc2a64f5f23da7af024a8c2e07526ed116a321dc4d6c",
+    "results/arms/prompt/arm_calibration_record.json": "329657903f91292d315041c50162a03ef8d1f6f4337c7f68998214d6fb466c17",
+    "results/arms/prompt/calib_metrics.csv": "d9180172d409c05f3866464d2325f190c99523dbc51d8b23985935ee6ac42e1d",
+    "results/exploratory/prompt_test/record.json": "a099e5ac56307d77f82b2ccd703b2c1531530ca97cd85384de7494c8b2725c20",
+    "results/exploratory/prompt_test/test_metrics.csv": "7eb24b01d5570928f7a2be559f6cc3b9ce48ce41f98a46174c30eb0e2a8f42ee",
+    "results/freeze/freeze_record.json": "532522071c4a47525c60f614fd35096da736b5ff8f747d30f1da1d3380dfa749",
+    "results/scores/scores.jsonl": "4196dd507b2f6a2cbcde07b34c9c019f7b689a8fe79eb4043ac1723bc298ab23",
+    "results/scores/snapshot_manifest.json": "dc0d57d7b514d50dc3a98804a8149a2ee4e2b41c7a200f9d8eda55b6afc3416d",
+    "results/tables/calib_metrics.csv": "cef25f2664c8e7923f72b66669d2f1f1721fc559b245b5c42223d1b92ce3b5cb",
+    "results/test/test_metrics.csv": "d3a71e94b6dd3a4309e6609fbd03bb780501ac165e07875f924ae73708c40096",
+    "results/test/test_pass_record.json": "f41f931f585d127ba95f78c474a91184f936abf31ca9e06f0825b993e8e971ee"
+  },
+  "analysis_source_sha256": {
+    "src/wncf/metrics.py": "5ebda71a764a62b4aa26c517ee4e3d8e8634edeaeab4c3312434b91b0c6c485b",
+    "src/wncf/queries.py": "7fd466b57e7e225a5b79b9efa62162f5a10211ab8dbc1729e7fb1eedf857f557",
+    "src/wncf/snapshot.py": "3ae742e6c7943c4778f95c75ad0bbef58ec10741fb08f817b524f5f49915d7b7",
+    "src/wncf/provenance.py": "a1f5a364d46555cb6f8d33422d60e61b432977f582bda5c9685bbf7e7ca2fb59",
+    "scripts/reanalyze.py": "c1c298469519f48e145a162ae4fb855642a7e99423d365e732fe37523369bb3a"
+  },
+  "outputs_sha256": {
+    "results/corrected/primary/posthoc_calibration_record.json": "37d48a1bb5c11df814046fffb76aba51a65c1fdd05c1e50b8ee4feeaf1470a7b",
+    "results/corrected/primary/calibration_original_thresholds.csv": "3d08adb006e937d1a7ef8a0c95ead205562712d0783a0a5051ce07f5702ebdc5",
+    "results/corrected/figures/primary_calibration_original_thresholds_risk_coverage.png": "bbb1d5b114e8df7075eb93b6a9913a8ae67bc68a68bf2b181cbce6748d416142",
+    "results/corrected/primary/calibration_posthoc_thresholds.csv": "187a87a19ab1f33f4ce9620124872a7488375c19570c82da6d223684b2439570",
+    "results/corrected/figures/primary_calibration_posthoc_thresholds_risk_coverage.png": "d80c9f736a8a25b7f2f4a9f445fbe51bbc9999a6effbcc7345d0bc9ad11fa567",
+    "results/corrected/primary/test_original_thresholds.csv": "e801401a30d9e0ece85ca6293e63152fba724239117a310060ab80708540c597",
+    "results/corrected/figures/primary_test_original_thresholds_risk_coverage.png": "4a770ba3d7c26e9c39834398a07bad010e8e1b3464ecb2a5daac583363de8158",
+    "results/corrected/primary/test_posthoc_thresholds.csv": "bf5230bf16a9a261d30086949d5ba14e097baa1a1931d6a111ae66c1cee1632d",
+    "results/corrected/figures/primary_test_posthoc_thresholds_risk_coverage.png": "ecb01386c62e0bea28477b06b1b2826f8e27da10fc9010b6b6b19abee57cb592",
+    "results/corrected/arms/appearance/posthoc_calibration_record.json": "a66d44750b40ce60add7f2d8b44afbaa49fd853cacfd0a3bc354b9fc103066c7",
+    "results/corrected/arms/appearance/calibration_original_thresholds.csv": "9a05359d2d338fc45d0899610e305b364cfcde4fc6eb560b9c45f7ae30f7ecc4",
+    "results/corrected/figures/appearance_calibration_original_thresholds_risk_coverage.png": "50014372ed936c27834a626e48522e4fc1851ee37588bc96fae1c2edb82c2416",
+    "results/corrected/arms/appearance/calibration_posthoc_thresholds.csv": "831bccfe917b66dd32dbdc1b825d1bfae23962d2b292bfad2da709dc55d8f952",
+    "results/corrected/figures/appearance_calibration_posthoc_thresholds_risk_coverage.png": "bc67bb6e4c982edd7b43f6b12f57245abc574bd2ae8af04da68e5b2b0723f881",
+    "results/corrected/arms/int8/posthoc_calibration_record.json": "9a7d58f3ae4fbccdeb2b4c5e1b130f37617969556d0b6fe58844e8677c2ac183",
+    "results/corrected/arms/int8/calibration_original_thresholds.csv": "8a3a068c36985b349270dd03853bd6f8eff745a84155fd1f22e232b2f48f1f11",
+    "results/corrected/figures/int8_calibration_original_thresholds_risk_coverage.png": "84cca5c39863159bca2fa756b96842f779c9856983b2a267e9f1879def3baedc",
+    "results/corrected/arms/int8/calibration_posthoc_thresholds.csv": "809ea9c7405b6bf6b802bf6c6796900b697a7410b7712d268a024219e99c630f",
+    "results/corrected/figures/int8_calibration_posthoc_thresholds_risk_coverage.png": "fc9337a4e856e3004a5bf0e3c613613b2995696559651afce43d5af4c58bdfc7",
+    "results/corrected/arms/prompt/posthoc_calibration_record.json": "774b2bd60fdd8f72844d0cb34e0cc4aab3af97521820d871ae397a90b965c357",
+    "results/corrected/arms/prompt/calibration_original_thresholds.csv": "f437aa34cbb7222601d1c05b6d7fd4249a014096e39a63875528a7e44b520283",
+    "results/corrected/figures/prompt_calibration_original_thresholds_risk_coverage.png": "14002641e5dac5cd940f9e9ddc2e6045f651083758c47e80f113c8e97d308377",
+    "results/corrected/arms/prompt/calibration_posthoc_thresholds.csv": "9393e7d756afd2388ebf33a58d1a38f23b1cc9f9775dd0104201cdf4acb9e77b",
+    "results/corrected/figures/prompt_calibration_posthoc_thresholds_risk_coverage.png": "b8bb6e13ae50e8ef9eea587c6c0b3c293c82c5e2e4707db7ec336ba5f33824b4",
+    "results/corrected/exploratory/prompt_test_original_thresholds.csv": "3f91504e417a3df00326d8ccca2a6f58e0fdcc94b71329783051821af2f2574f",
+    "results/corrected/figures/exploratory_prompt_test_original_thresholds_risk_coverage.png": "17b26e0f47bad4a65d856128e8d7691719a54c1f1c889f6c06e3b79a15c914f8",
+    "results/corrected/exploratory/prompt_test_posthoc_thresholds.csv": "30c2cbfb24e11b22d9f874c077a33724163aac5178c1e7cbc043ee6625e356bd",
+    "results/corrected/figures/exploratory_prompt_test_posthoc_thresholds_risk_coverage.png": "08b8541f11cbce8111efa4de58d7e8ee0e9157cfb67aa8ec0236b2fd468ceb24",
+    "results/corrected/summary.csv": "1df58266571ca3b835154cf855bf1f392310ebba24bad912213bec35f52371f7"
+  },
+  "original_inputs_unchanged": true,
+  "calibration_records": {
+    "primary": {
+      "status": "post-hoc family-balanced sensitivity, fitted on calibration only after test results were known",
+      "historical_record": "results/freeze/freeze_record.json",
+      "historical_record_sha256": "532522071c4a47525c60f614fd35096da736b5ff8f747d30f1da1d3380dfa749",
+      "weighting": "family",
+      "weighting_definition": "Each family contributes unit total weight, divided equally among its observed regimes and then among queries in each family/regime cell. Rates divide weighted count sums. Unprefixed counts are raw integers; weighted_* fields are weighted sums, not object counts.",
+      "n_queries": 112,
+      "families": {
+        "ell": 24,
+        "gear": 12,
+        "notched": 16,
+        "rect": 20,
+        "square": 16,
+        "tee": 12,
+        "trapezoid": 12
+      },
+      "coverage_target_present": 0.7,
+      "original_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.787984976280714
+        },
+        "S2": {
+          "tau": 0.787984976280714,
+          "delta": 0.0
+        }
+      },
+      "posthoc_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.7887614512417298
+        },
+        "S2": {
+          "tau": 0.7887614512417298,
+          "delta": 0.0
+        }
+      },
+      "S2_grid": {
+        "tau": [
+          0.0,
+          0.1,
+          0.2,
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+          0.8,
+          0.9,
+          1.0,
+          "S1 tau"
+        ],
+        "delta": [
+          0.0,
+          0.05,
+          0.1,
+          0.2,
+          0.3,
+          0.5
+        ]
+      },
+      "tie_breaking": "minimize weighted risk; then higher weighted correct yield, higher tau, higher delta",
+      "target_reached": {
+        "S1": true,
+        "S2": true
+      }
+    },
+    "appearance": {
+      "status": "post-hoc family-balanced sensitivity, fitted on calibration only after test results were known",
+      "historical_record": "results/arms/appearance/arm_calibration_record.json",
+      "historical_record_sha256": "55e42faae7015200cbbd92990de19d4f3303cf0ae6f929f8c4cf4ca6f22c6bb8",
+      "weighting": "family",
+      "weighting_definition": "Each family contributes unit total weight, divided equally among its observed regimes and then among queries in each family/regime cell. Rates divide weighted count sums. Unprefixed counts are raw integers; weighted_* fields are weighted sums, not object counts.",
+      "n_queries": 112,
+      "families": {
+        "ell": 24,
+        "gear": 12,
+        "notched": 16,
+        "rect": 20,
+        "square": 16,
+        "tee": 12,
+        "trapezoid": 12
+      },
+      "coverage_target_present": 0.7,
+      "original_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.7448466506520907
+        },
+        "S2": {
+          "tau": 0.7448466506520907,
+          "delta": 0.0
+        }
+      },
+      "posthoc_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.7457525334204658
+        },
+        "S2": {
+          "tau": 0.7457525334204658,
+          "delta": 0.0
+        }
+      },
+      "S2_grid": {
+        "tau": [
+          0.0,
+          0.1,
+          0.2,
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+          0.8,
+          0.9,
+          1.0,
+          "S1 tau"
+        ],
+        "delta": [
+          0.0,
+          0.05,
+          0.1,
+          0.2,
+          0.3,
+          0.5
+        ]
+      },
+      "tie_breaking": "minimize weighted risk; then higher weighted correct yield, higher tau, higher delta",
+      "target_reached": {
+        "S1": true,
+        "S2": true
+      }
+    },
+    "int8": {
+      "status": "post-hoc family-balanced sensitivity, fitted on calibration only after test results were known",
+      "historical_record": "results/arms/int8/arm_calibration_record.json",
+      "historical_record_sha256": "44b6756c6b814d4d954be55b1ccaee8e8e423973aa9d2cc5e8c3cea8bb988523",
+      "weighting": "family",
+      "weighting_definition": "Each family contributes unit total weight, divided equally among its observed regimes and then among queries in each family/regime cell. Rates divide weighted count sums. Unprefixed counts are raw integers; weighted_* fields are weighted sums, not object counts.",
+      "n_queries": 112,
+      "families": {
+        "ell": 24,
+        "gear": 12,
+        "notched": 16,
+        "rect": 20,
+        "square": 16,
+        "tee": 12,
+        "trapezoid": 12
+      },
+      "coverage_target_present": 0.7,
+      "original_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.7069557131837898
+        },
+        "S2": {
+          "tau": 0.7069557131837898,
+          "delta": 0.0
+        }
+      },
+      "posthoc_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.7074453053429188
+        },
+        "S2": {
+          "tau": 0.7,
+          "delta": 0.0
+        }
+      },
+      "S2_grid": {
+        "tau": [
+          0.0,
+          0.1,
+          0.2,
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+          0.8,
+          0.9,
+          1.0,
+          "S1 tau"
+        ],
+        "delta": [
+          0.0,
+          0.05,
+          0.1,
+          0.2,
+          0.3,
+          0.5
+        ]
+      },
+      "tie_breaking": "minimize weighted risk; then higher weighted correct yield, higher tau, higher delta",
+      "target_reached": {
+        "S1": true,
+        "S2": true
+      }
+    },
+    "prompt": {
+      "status": "post-hoc family-balanced sensitivity, fitted on calibration only after test results were known",
+      "historical_record": "results/arms/prompt/arm_calibration_record.json",
+      "historical_record_sha256": "329657903f91292d315041c50162a03ef8d1f6f4337c7f68998214d6fb466c17",
+      "weighting": "family",
+      "weighting_definition": "Each family contributes unit total weight, divided equally among its observed regimes and then among queries in each family/regime cell. Rates divide weighted count sums. Unprefixed counts are raw integers; weighted_* fields are weighted sums, not object counts.",
+      "n_queries": 112,
+      "families": {
+        "ell": 24,
+        "gear": 12,
+        "notched": 16,
+        "rect": 20,
+        "square": 16,
+        "tee": 12,
+        "trapezoid": 12
+      },
+      "coverage_target_present": 0.7,
+      "original_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.607197978754429
+        },
+        "S2": {
+          "tau": 0.6,
+          "delta": 0.0
+        }
+      },
+      "posthoc_thresholds": {
+        "B0": {},
+        "B1": {},
+        "U0": {},
+        "S1": {
+          "tau": 0.6076700578123778
+        },
+        "S2": {
+          "tau": 0.6,
+          "delta": 0.0
+        }
+      },
+      "S2_grid": {
+        "tau": [
+          0.0,
+          0.1,
+          0.2,
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+          0.8,
+          0.9,
+          1.0,
+          "S1 tau"
+        ],
+        "delta": [
+          0.0,
+          0.05,
+          0.1,
+          0.2,
+          0.3,
+          0.5
+        ]
+      },
+      "tie_breaking": "minimize weighted risk; then higher weighted correct yield, higher tau, higher delta",
+      "target_reached": {
+        "S1": true,
+        "S2": true
+      }
+    }
+  }
+}

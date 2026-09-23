@@ -1,0 +1,51 @@
+{
+  "created_at_utc": "2026-09-23T16:59:42.757157+00:00",
+  "historical_outputs_preserved": true,
+  "new_model_calls": 0,
+  "labels_changed": 0,
+  "split_membership_changed": false,
+  "frozen_at_recorded": "2026-09-23T13:18:47",
+  "score_identity": {
+    "model_id": "llava-hf/llava-onevision-qwen2-7b-ov-hf",
+    "revision": "0d50680527681998e456c7b78950205bedd8a068",
+    "quant": "nf4",
+    "grouping": "flat",
+    "chat": "qwen_1_5",
+    "prompt_id": "controlled",
+    "prompt_sha": "cc6ff61ab5bd5027d9983f9ccd7937594f888f9c51ca60b11047ac12cade7100",
+    "views": [
+      "v1",
+      "v2"
+    ],
+    "versions": {
+      "torch": "2.14.0+cu130",
+      "transformers": "5.17.0",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "freeze_record_sha256": "532522071c4a47525c60f614fd35096da736b5ff8f747d30f1da1d3380dfa749",
+  "snapshot_matches_verified": 399,
+  "snapshot_manifest_sha256": "dc0d57d7b514d50dc3a98804a8149a2ee4e2b41c7a200f9d8eda55b6afc3416d",
+  "image_identity_check": "Archived image paths/hashes from the verified snapshot manifest reproduce score keys. Rendered PNGs are not required or rehashed during this offline analysis.",
+  "margin_bin_edges_mm": [
+    -2.0,
+    -1.0,
+    -0.5,
+    -0.15,
+    -0.05,
+    0.05,
+    0.15,
+    "+inf"
+  ],
+  "near_duplicate_diagnostic": "Post hoc examples with bore IoU >=0.9 across unchanged template splits; not an independence certificate or a reason to reshuffle the inspected test set.",
+  "source_sha256": {
+    "results/aperture/aperture_scores.csv": "79280cb22b0a3649c00c0f2b6282957f0ffd307804d623803f1507bf4b6192d5",
+    "results/freeze/freeze_record.json": "532522071c4a47525c60f614fd35096da736b5ff8f747d30f1da1d3380dfa749",
+    "results/scores/scores.jsonl": "4196dd507b2f6a2cbcde07b34c9c019f7b689a8fe79eb4043ac1723bc298ab23",
+    "results/scores/snapshot_manifest.json": "dc0d57d7b514d50dc3a98804a8149a2ee4e2b41c7a200f9d8eda55b6afc3416d",
+    "data/aperture/pairs.csv": "231b1bc210d30782b286847497d4c7461e99545d2ae45891980e4482529f5691",
+    "data/parts/catalog.csv": "7000e899367b99036f79b4a73512bab5425aef8e0322a85ac8389283a2e16ae2",
+    "data/parts/splits.csv": "3c342e5d64fd28c1ed648cbec4e7bc6d8a76585b0f329cf7b78a3e6d1555c34f",
+    "scripts/analyze_aperture.py": "e342d150ac793040b7c8bd048fd16f865cb3665ffb7c1ed8fbeef8912b20bf2a"
+  }
+}

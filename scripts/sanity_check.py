@@ -1,4 +1,4 @@
-"""Bounded development sanity check under the frozen configuration (protocol.md section 7).
+"""Bounded development sanity check under the frozen configuration.
 
     uv run python scripts/sanity_check.py
 

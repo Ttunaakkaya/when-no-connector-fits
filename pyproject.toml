@@ -1,7 +1,7 @@
 [project]
 name = "wncf"
 version = "0.1.0"
-description = "When No Connector Fits: missing-mate evaluation of VLM peg-hole matching (unofficial re-implementation of Yajima et al., IROS 2025)"
+description = "When No Connector Fits: missing-mate evaluation of VLM peg-hole matching (an unofficial study based on Yajima et al., IROS 2025)"
 readme = "README.md"
 requires-python = ">=3.11,<3.12"
 dependencies = [

@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "snapshot_source_files_verified": 17,
+  "corrected_outputs_verified": 29,
+  "primary_summary_numeric_checks": 45,
+  "historical_numeric_ci_checks": 4248,
+  "local_document_links_verified": 2,
+  "new_model_calls": 0
+}

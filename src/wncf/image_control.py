@@ -1,4 +1,4 @@
-"""Image-only containment control (master plan section 8).
+"""Image-only containment control.
 
 Question: does the information needed to decide fit survive the model's preprocessing? This check
 never sees the true polygons. It takes the top-view pixels exactly as the processor delivers them

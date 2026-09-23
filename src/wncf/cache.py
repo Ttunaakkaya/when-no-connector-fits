@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import warnings
 from pathlib import Path
 
 from wncf import REPO_ROOT
@@ -58,12 +59,30 @@ class ScoreCache:
     def __init__(self, path: Path = CACHE):
         self.path = Path(path)
         self.rows: dict[str, dict] = {}
+        self._incomplete: tuple[int, bytes, bytes] | None = None
+        self._needs_newline = False
         if self.path.exists():
-            with self.path.open(encoding="utf-8") as f:
-                for line in f:
-                    if line.strip():
+            content = self.path.read_bytes()
+            lines = content.splitlines(keepends=True)
+            offset = 0
+            for index, line in enumerate(lines):
+                if line.strip():
+                    try:
                         row = json.loads(line)
-                        self.rows[row["key"]] = row
+                    except (json.JSONDecodeError, UnicodeDecodeError):
+                        # A writer killed mid-record can leave one unterminated JSON prefix.
+                        # Completed lines and corruption in the middle must still fail loudly.
+                        if index != len(lines) - 1 or line.endswith((b"\n", b"\r")) or not line.lstrip().startswith(b"{"):
+                            raise
+                        self._incomplete = (offset, line, content)
+                        warnings.warn(f"Ignoring incomplete final cache record in {self.path}; "
+                                      "it will be backed up before the next append", RuntimeWarning, stacklevel=2)
+                        break
+                    if row["key"] in self.rows and self.rows[row["key"]] != row:
+                        raise ValueError(f"conflicting duplicate cache key {row['key']}")
+                    self.rows[row["key"]] = row
+                offset += len(line)
+            self._needs_newline = bool(content) and not content.endswith((b"\n", b"\r"))
 
     def __contains__(self, key: str) -> bool:
         return key in self.rows
@@ -76,7 +95,20 @@ class ScoreCache:
             return
         row = {"key": key, **row}
         self.path.parent.mkdir(parents=True, exist_ok=True)
+        if self._incomplete is not None:
+            offset, tail, original = self._incomplete
+            if self.path.read_bytes() != original:
+                raise RuntimeError("cache changed during recovery; reload before appending")
+            backup = self.path.with_name(self.path.name + "." + hashlib.sha256(tail).hexdigest()[:12] + ".incomplete")
+            backup.write_bytes(tail)
+            with self.path.open("r+b") as stream:
+                stream.truncate(offset)
+            self._incomplete = None
+            self._needs_newline = False
         with self.path.open("a", encoding="utf-8") as f:
+            if self._needs_newline:
+                f.write("\n")
             f.write(json.dumps(row, sort_keys=True) + "\n")
             f.flush()
+        self._needs_newline = False
         self.rows[key] = row

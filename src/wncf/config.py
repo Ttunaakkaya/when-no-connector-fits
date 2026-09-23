@@ -1,6 +1,6 @@
-"""The frozen input configuration (protocol.md section 7), in one importable place.
+"""The frozen input configuration, in one importable place.
 
-Every scoring path for the core experiment reads this, so the driver cannot drift from the protocol.
+Every scoring path for the core experiment reads this, so the driver cannot drift from the frozen setup.
 Changing any value invalidates cached scores, because the cache key covers all of it.
 """
 
@@ -14,7 +14,7 @@ FROZEN = {
     "render_settings_sha": "7de39322d57d",
 }
 
-# Predeclared sensitivity arms (protocol.md section 7): calibration blocks only, thresholds recalibrated
+# Predeclared sensitivity arms: calibration blocks only, thresholds recalibrated
 # inside the arm, never able to change the frozen primary configuration. The appearance arm swaps the
 # neutral renders for an imitation of the paper's photos; the colours match scripts/replica_3dprint.py.
 PAPER_LOOK = {"background": "#141414", "peg": "#d8322e", "socket": "#8fdca4", "floor": "#0b0b0b"}

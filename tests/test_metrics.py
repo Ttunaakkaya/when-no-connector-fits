@@ -1,10 +1,13 @@
 """Stage 7-8 metrics and calibration on hand-built queries."""
 
+import random
+import math
+
 import pytest
 
 from wncf.metrics import (COVERAGE_TARGET, Query, bootstrap_by_family, calibrate_s1, calibrate_s2,
                           evaluate, evaluate_by_tier, outcome, risk_coverage, top1_correct)
-from wncf.rules import CandidateScore, Decision, decide
+from wncf.rules import CandidateScore, decide
 
 
 def sc(cid, p_yes, answer="yes", top_prob=None):
@@ -71,8 +74,9 @@ def test_tiers_are_reported_separately():
 
 def test_regime_weights_apply_to_counts_not_to_averaged_ratios():
     qs = [PRESENT, PRESENT, ABSENT]  # easy present over-represented
-    equal = evaluate(qs, "U0", weights={"present_easy": 0.5, "absent_easy": 1.0})
-    assert equal["n"] == pytest.approx(2.0)
+    equal = evaluate(qs, "U0", weighting="query", weights={"present_easy": 0.5, "absent_easy": 1.0})
+    assert equal["n"] == 3  # raw counts are never replaced by weighted sums
+    assert equal["weighted_n"] == pytest.approx(2.0)
     assert equal["accepted_risk"] == pytest.approx(0.5)  # 1 wrong of 2 weighted selections
 
 
@@ -127,3 +131,93 @@ def test_bootstrap_resamples_whole_families():
     mixed = qs + [query("w_present_hard", "present_hard", mate_score=0.1, other_scores=(0.9,), family="f3")]
     lo2, hi2 = bootstrap_by_family(mixed, "U0", "correct_yield", n=400)
     assert lo2 < 1.0 <= hi2
+
+
+def test_family_balancing_does_not_let_repeated_geometry_dominate():
+    good = query("g", "present_easy", mate_score=0.9, family="large")
+    bad = query("b", "present_easy", mate_score=0.1, family="small")
+    qs = [good] * 9 + [bad]
+    balanced = evaluate(qs, "U0")
+    assert (balanced["n"], balanced["correct"], balanced["wrong"]) == (10, 9, 1)
+    assert (balanced["weighted_n"], balanced["weighted_correct"], balanced["weighted_wrong"]) == pytest.approx((2, 1, 1))
+    assert balanced["correct_yield"] == pytest.approx(0.5)
+    assert evaluate(qs, "U0", weighting="query")["correct_yield"] == pytest.approx(0.9)
+
+
+def test_regimes_are_balanced_within_each_family_before_taking_ratios():
+    qs = [PRESENT] * 9 + [ABSENT]
+    m = evaluate(qs, "U0")
+    assert m["n_present"] == 9 and m["n_absent"] == 1
+    assert m["weighted_n_present"] == pytest.approx(0.5)
+    assert m["weighted_n_absent"] == pytest.approx(0.5)
+    assert m["accepted_risk"] == pytest.approx(0.5)
+
+
+def test_family_risk_is_ratio_of_weighted_counts_not_average_of_family_risks():
+    qs = [query("g", "present_easy", mate_score=0.9, family="good")]
+    qs += [query("w", "present_easy", mate_score=0.1, other_scores=(0.9,), family="mixed"),
+           query("d", "present_easy", mate_score=0.1, other_scores=(0.2,), family="mixed")]
+    m = evaluate(qs, "S1", tau=0.8)
+    # Good family: 1/1 selected, no errors. Mixed family: 1/2 selected, one error.
+    assert m["accepted_risk"] == pytest.approx(0.5 / 1.5)
+    assert m["coverage"] == pytest.approx(1.5 / 2)
+    assert (m["selected"], m["wrong"]) == (2, 1)
+
+
+def test_b1_has_no_ranking_metric_even_when_a_unique_yes_is_selected():
+    q = query("b1", "present_easy", mate_score=0.9, answer="no")
+    assert evaluate([q], "B1")["selected"] == 1
+    assert top1_correct(q, "B1") is None
+    assert evaluate([q], "B1")["top1_present"] is None
+    assert bootstrap_by_family([q], "B1", "top1_present", n=30) == (None, None)
+
+
+def test_calibration_uses_the_same_explicit_weighting_as_evaluation():
+    qs = [query("g", "present_easy", mate_score=0.9, family="large")] * 9
+    qs += [query("s", "present_easy", mate_score=0.6, family="small")]
+    assert calibrate_s1(qs) == pytest.approx(0.6)
+    assert calibrate_s1(qs, weighting="query") == pytest.approx(0.9)
+    assert calibrate_s2(qs, 0.6)[0] <= 0.6
+
+
+def test_bootstrap_retains_draw_multiplicity_with_family_balancing():
+    # Independently calculate the percentile distribution for 12 unequal families. If duplicate
+    # family ids are collapsed when assigning weights, the middle quantiles change.
+    qs = []
+    rates = []
+    for i in range(12):
+        rate = (i % 4) / 3
+        rates.append(rate)
+        for j in range(3):
+            qs += [query(f"{i}-{j}", "present_easy", mate_score=0.9 if j < i % 4 else 0.1,
+                         family=str(i))] * (i + 1)
+    rng = random.Random(94)
+    draws = sorted(sum(rng.choice(rates) for _ in rates) / len(rates) for _ in range(800))
+    expected = (draws[int(0.025 * len(draws))], draws[int(0.975 * len(draws))])
+    assert bootstrap_by_family(qs, "U0", "correct_yield", n=800, seed=94) == pytest.approx(expected)
+
+
+def test_query_bootstrap_replays_pooled_estimator():
+    good = query("g", "present_easy", mate_score=0.9, family="good")
+    bad = query("b", "present_easy", mate_score=0.1, family="bad")
+    qs = [good] * 9 + [bad]
+    rng = random.Random(42)
+    draws = []
+    for _ in range(400):
+        picked = [rng.choice(("good", "bad")) for _ in range(2)]
+        count = picked.count("good")
+        draws.append(9 * count / (9 * count + 2 - count))
+    draws.sort()
+    expected = (draws[10], draws[390])
+    assert bootstrap_by_family(qs, "U0", "correct_yield", n=400, seed=42, weighting="query") == expected
+
+
+def test_invalid_scores_cannot_define_nonfinite_calibration_or_curve_thresholds():
+    invalid = Query("bad", "bad", "bad", "calib", "absent_easy", {"X": "incompatible"},
+                    (CandidateScore("X", "yes", 0.5, float("nan"), float("nan"), 0.5),))
+    assert calibrate_s1([invalid, PRESENT]) == pytest.approx(0.9)
+    assert all(math.isfinite(tau) for tau, *_ in risk_coverage([invalid, PRESENT]))
+
+
+def test_bootstrap_of_a_rule_that_never_selects_is_undefined_even_with_few_draws():
+    assert bootstrap_by_family([PRESENT], "S1", "accepted_risk", n=5, tau=1.01) == (None, None)

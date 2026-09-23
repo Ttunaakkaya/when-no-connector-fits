@@ -6,10 +6,11 @@ Added 23 September 2026 after the primary test pass (results/test/) was complete
 number here is exploratory, not confirmatory. The arm's S1/S2 thresholds come from that arm's own
 calibration record (results/arms/<arm>/arm_calibration_record.json), fitted on calibration blocks
 before any test score for the arm existed; nothing is fitted on test. scripts/evaluate.py, which
-produced the primary result, is left byte-identical to the hash recorded before the test pass.
+produced the primary result, is in the git history (SHA-256 a14f02f84a443153...).
 
-Writes results/exploratory/<arm>_test/test_metrics.csv and record.json, and
-results/figures/exploratory_<arm>_test_risk_coverage.png.
+This replay uses corrected family weighting and validates the arm's full calibration
+identity. Writes results/replays/exploratory/<arm>_test/ only, preserving the original results.
+Use scripts/reanalyze.py for the complete offline corrective analysis.
 """
 
 import argparse
@@ -30,6 +31,7 @@ from wncf.metrics import bootstrap_by_family, evaluate, evaluate_by_tier, family
 from wncf.queries import MissingScores, load_queries
 from wncf.rules import METHODS
 from wncf.splits import EXPOSED_FAMILIES
+from wncf.provenance import ProvenanceError, load_calibration, thresholds, validate_test_pass
 
 TEST_PASS = REPO_ROOT / "results" / "test" / "test_pass_record.json"
 BOOT_N = 2000
@@ -43,9 +45,11 @@ def main():
     if not TEST_PASS.exists():
         sys.exit("the primary test pass must exist before any exploratory test evaluation")
     record_path = REPO_ROOT / "results" / "arms" / arm / "arm_calibration_record.json"
-    cal = json.loads(record_path.read_text(encoding="utf-8"))["calibration"]
-    params = {"B0": {}, "B1": {}, "U0": {}, "S1": {"tau": cal["S1"]["tau"]},
-              "S2": {"tau": cal["S2"]["tau"], "delta": cal["S2"]["delta"]}}
+    try:
+        validate_test_pass(TEST_PASS)
+        params = thresholds(load_calibration(record_path, arm=arm))
+    except ProvenanceError as error:
+        sys.exit(f"refusing exploratory replay: {error}")
     try:
         queries = load_queries({"test"}, arm)
     except MissingScores as e:
@@ -62,7 +66,7 @@ def main():
                        for k in CI_METRICS} if group == "all" else {}
                 rows.append({"method": method, "families": group, "tier": tier, **m, **cis})
 
-    out = REPO_ROOT / "results" / "exploratory" / f"{arm}_test"
+    out = REPO_ROOT / "results" / "replays" / "exploratory" / f"{arm}_test"
     out.mkdir(parents=True, exist_ok=True)
     with (out / "test_metrics.csv").open("w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(dict.fromkeys(k for r in rows for k in r)))
@@ -70,6 +74,7 @@ def main():
         w.writerows(rows)
     (out / "record.json").write_text(json.dumps({
         "status": "EXPLORATORY: run after the primary test pass was complete and known",
+        "weighting": "family; corrected after original results were known",
         "evaluated_at": time.strftime("%Y-%m-%dT%H:%M:%S"), "arm": arm,
         "thresholds_from": str(record_path.relative_to(REPO_ROOT)), "thresholds": params,
         "arm_record_sha256": file_sha(record_path), "identity": frozen_identity(arm),
@@ -97,7 +102,7 @@ def main():
     fig.suptitle(f"Exploratory: the {arm} arm on test after the primary test pass; filled circles use the arm's "
                  "calibration-split thresholds", fontsize=9)
     fig.tight_layout()
-    fig.savefig(REPO_ROOT / "results" / "figures" / f"exploratory_{arm}_test_risk_coverage.png", dpi=140)
+    fig.savefig(out / "risk_coverage.png", dpi=140)
 
     print(f"EXPLORATORY {arm} arm on test: {len(queries)} blocks {family_counts(queries)}")
     print(f"thresholds from the arm's calibration: {params['S1']} / {params['S2']}")

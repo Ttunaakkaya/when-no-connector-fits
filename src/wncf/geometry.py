@@ -1,6 +1,6 @@
 """Stage 2: the fit oracle (the referee).
 
-Contract (master plan section 3): a rigid constant-profile peg and socket. The peg's centroid is
+Contract: a rigid constant-profile peg and socket. The peg's centroid is
 placed on the bore's centroid, and the peg may be turned by 0, 90, 180 or 270 degrees (the paper's
 four yaw classes) before a straight insertion along the axis. No tilt, no deformation and no other
 rotation. Because both parts have a constant cross-section, a 2D containment test on the profiles
@@ -12,13 +12,15 @@ pair's margin is the best over the four turns. With the numerical tolerance EPSI
 
 - compatible:   margin >= EPSILON
 - ambiguous:    -EPSILON <= margin < EPSILON                          reason "boundary"
-- ambiguous:    margin < -EPSILON, but some sideways shift makes the peg fit
+- ambiguous:    margin < -EPSILON, but the conservative raster search finds a potential shifted fit
                                                                       reason "off_centre"
 - incompatible: no quarter turn fits, even with a free sideways shift
 
-The off-centre case is ambiguous because its answer depends on whether a robot may nudge the peg
-(the paper uses spiral search for small position errors). Excluding it makes every compatible and
-incompatible label hold under both conventions.
+The off-centre flag excludes possible fits that depend on whether a robot may nudge the peg (the
+paper uses spiral search for small position errors). The search expands the bore to avoid missing
+such fits, so this flag also includes some pairs that cannot actually fit after any translation.
+It is a conservative exclusion, not a certificate of a real shifted fit. Excluding these pairs
+makes every compatible and incompatible label hold under both conventions.
 
 The margin is the *tightest* gap, so it says whether the peg fits, not whether the shapes match: a
 small square in a gear-shaped bore touches the gear's root circle yet rattles in the teeth. For
@@ -139,7 +141,7 @@ class BoreOracle:
         return hi
 
     def fits_with_shift(self, turns: list[tuple[int, Polygon]]) -> bool:
-        """Does any quarter turn fit somewhere in the bore after a free sideways shift?
+        """Could a quarter turn fit after a sideways shift under the conservative raster tolerance?
 
         Raster search on a RASTER_H grid against the bore grown by EPSILON + RASTER_H. It has no false
         negatives for fits inside bore.buffer(EPSILON): any such placement is within one grid step of a

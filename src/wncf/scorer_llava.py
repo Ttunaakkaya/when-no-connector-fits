@@ -32,7 +32,7 @@ PROMPTS = {
         "Can the peg in images 1 and 2 be perfectly inserted into the hole in images 3 and 4? "
         "Please answer with only yes or no."
     ),
-    # Same structure, but states the task contract (master plan section 3) and the shared scale.
+    # Same structure, but states the task contract (see geometry.py) and the shared scale.
     "controlled": (
         f"{IMAGE} This is a top-down image of a peg's cross-section. "
         f"{IMAGE} This is another image of the same peg from a 30-degree angle. "
@@ -65,7 +65,7 @@ PROMPTS = {
 PROMPT_VIEWS = {"paper": ("v1", "v2"), "controlled": ("v1", "v2"), "paper_v1": ("v1",), "shape": ("v1", "v2")}
 
 # ChatML "qwen_1_5" conversation template that LLaVA-OneVision was trained with (LLaVA-NeXT repo).
-# The llava-hf chat template differs: images first, "user " + space, no system turn. See docs/decisions.md.
+# The llava-hf chat template differs: images first, "user " + space, no system turn.
 CHAT = (
     "<|im_start|>system\nYou are a helpful assistant.<|im_end|>\n"
     "<|im_start|>user\n{body}<|im_end|>\n"

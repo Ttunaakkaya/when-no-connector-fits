@@ -23,7 +23,6 @@ the cache.
 
 import argparse
 import csv
-import json
 import subprocess
 import sys
 import time
@@ -33,6 +32,7 @@ from PIL import Image
 from wncf import REPO_ROOT
 from wncf.cache import ScoreCache, file_sha, frozen_identity, pair_key
 from wncf.config import ARM_OVERRIDES, ARM_SPLITS, arm_config, arm_image_path
+from wncf.provenance import ProvenanceError, load_calibration, validate_test_pass
 
 BLOCKS = REPO_ROOT / "data" / "candidate_sets" / "blocks.csv"
 FREEZE = REPO_ROOT / "results" / "freeze" / "freeze_record.json"
@@ -62,14 +62,17 @@ def pairs_for(splits: set[str], arm: str | None = None, manifest=BLOCKS) -> list
     return list(seen.values())
 
 
-def check_test_allowed(allow: bool) -> None:
+def check_test_allowed(allow: bool, arm: str | None = None) -> None:
     if not allow:
         sys.exit("refusing to score the test split without --allow-test")
     if not FREEZE.exists():
         sys.exit(f"refusing to score test: no freeze record at {FREEZE}")
-    record = json.loads(FREEZE.read_text(encoding="utf-8"))
-    if record.get("blocks_sha256") != file_sha(BLOCKS):
-        sys.exit("refusing to score test: the freeze record was made for a different blocks manifest")
+    try:
+        load_calibration(FREEZE, blocks=BLOCKS)
+        if arm:
+            load_calibration(REPO_ROOT / "results/arms" / arm / "arm_calibration_record.json", arm=arm)
+    except ProvenanceError as error:
+        sys.exit(f"refusing to score test: {error}")
 
 
 def main():
@@ -88,16 +91,31 @@ def main():
             sys.exit(f"sensitivity arms run on {sorted(ARM_SPLITS)} only (use --exploratory after the test pass)")
         if not TEST_PASS.exists():
             sys.exit("exploratory arm runs outside calibration are allowed only after the primary test pass")
+        try:
+            validate_test_pass(TEST_PASS)
+        except ProvenanceError as error:
+            sys.exit(str(error))
     if "test" in args.split:
-        check_test_allowed(args.allow_test)
+        check_test_allowed(args.allow_test, args.arm)
 
     cache = ScoreCache()
     cfg = arm_config(args.arm)
     base = frozen_identity(args.arm)
     todo = []
     pairs = pairs_for(set(args.split), args.arm, manifest)
+    frozen_images = None
+    if "test" in args.split:
+        from wncf.snapshot import verify_snapshot
+
+        try:
+            frozen_images = verify_snapshot()["images"]
+        except ProvenanceError as error:
+            sys.exit(str(error))
     for p in pairs:
         p["key"], p["image_sha"] = pair_key(base, p["paths"])
+        if frozen_images is not None and p["image_sha"] != [frozen_images.get(path) for path in p["paths"]]:
+            sys.exit("refusing frozen test scoring: input images differ from the recorded experiment; "
+                     "new inputs require a separately declared experiment")
         if p["key"] not in cache:
             todo.append(p)
     label = "+".join(args.split) + (f" ({args.arm} arm)" if args.arm else "") + \
@@ -114,6 +132,8 @@ def main():
     import torch
 
     from wncf.scorer_llava import LlavaScorer
+    from wncf.scorer_llava import render_prompt
+    from importlib.metadata import version
 
     scorer = LlavaScorer(model=cfg["model"], quant=cfg["quant"], grouping=cfg["grouping"], chat=cfg["chat"])
     t0 = time.perf_counter()
@@ -130,6 +150,12 @@ def main():
             "split": p["split"], "arm": args.arm, "exploratory": bool(args.exploratory),
             "peg_id": p["peg_id"], "cand_id": p["cand_id"],
             "image_sha": p["image_sha"],
+            "identity": {**base, "image_sha": p["image_sha"]},
+            "rendered_prompt": render_prompt(cfg["prompt"], cfg["chat"]),
+            "runtime_versions": {name: version(name) for name in
+                                 ("torch", "torchvision", "transformers", "bitsandbytes", "numpy", "pillow")},
+            "lockfile_sha256": file_sha(REPO_ROOT / "uv.lock"),
+            "manifest_sha256": file_sha(manifest),
             **{k: base[k] for k in ("model_id", "revision", "quant", "grouping", "chat", "prompt_id", "prompt_sha")},
             **s.as_dict(), "scored_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         })

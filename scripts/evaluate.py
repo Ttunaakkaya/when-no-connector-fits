@@ -1,16 +1,14 @@
-"""Evaluate the test split once, with the thresholds frozen on calibration data.
+"""Replay the historical test with its original thresholds and corrected family weighting.
 
     uv run python scripts/evaluate.py
 
-Written 23 September 2026 before any test block was scored. It never calibrates: S1 and S2 take their
-thresholds from results/freeze/freeze_record.json, and it refuses to run if that record was made for a
-different blocks manifest. Every method is reported per difficulty tier and separately for query
-families the eight-shape reconstruction exposed and those it did not (decisions.md D12), with 95%
-family-bootstrap intervals. Risk-coverage curves are descriptive: they sweep tau with S2's delta
-frozen and are never used to choose an operating point.
+The original pre-test implementation, which produced results/test/, is in the git history
+(SHA-256 a14f02f84a4431539ceb1a83ae23ae97c4180a3874aa5af4a6e10ffb58f46a86).
+This version validates the full frozen configuration and writes separate replay outputs.
+It never recalibrates. This is a correction after test inspection, not a fresh held-out evaluation.
+For the complete offline corrected report, use scripts/reanalyze.py instead.
 
-Writes results/test/test_metrics.csv, results/test/test_pass_record.json and
-results/figures/test_risk_coverage.png.
+Writes results/replays/test/ only; original results/test/ and the freeze remain unchanged.
 """
 
 import csv
@@ -29,20 +27,19 @@ from wncf.metrics import bootstrap_by_family, evaluate, evaluate_by_tier, family
 from wncf.queries import BLOCKS, MissingScores, load_queries
 from wncf.rules import METHODS
 from wncf.splits import EXPOSED_FAMILIES
+from wncf.provenance import ProvenanceError, load_calibration, thresholds
 
 FREEZE = REPO_ROOT / "results" / "freeze" / "freeze_record.json"
-OUT = REPO_ROOT / "results" / "test"
+OUT = REPO_ROOT / "results" / "replays" / "test"
 BOOT_N = 2000
 CI_METRICS = ("correct_yield", "accepted_risk", "absent_false_accept", "present_coverage", "top1_present")
 
 
 def frozen_params() -> dict:
-    record = json.loads(FREEZE.read_text(encoding="utf-8"))
-    if record.get("blocks_sha256") != file_sha(BLOCKS):
-        sys.exit("the freeze record was made for a different blocks manifest; refusing to evaluate")
-    cal = record["calibration"]
-    return {"B0": {}, "B1": {}, "U0": {}, "S1": {"tau": cal["S1"]["tau"]},
-            "S2": {"tau": cal["S2"]["tau"], "delta": cal["S2"]["delta"]}}
+    try:
+        return thresholds(load_calibration(FREEZE, blocks=BLOCKS))
+    except ProvenanceError as error:
+        sys.exit(f"refusing to evaluate: {error}")
 
 
 def main():
@@ -74,6 +71,8 @@ def main():
         w.writeheader()
         w.writerows(rows)
     (OUT / "test_pass_record.json").write_text(json.dumps({
+        "status": "corrective replay after original test inspection; not a new test pass",
+        "weighting": "family",
         "evaluated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
         "freeze_record_sha256": file_sha(FREEZE), "blocks_sha256": file_sha(BLOCKS),
         "identity": frozen_identity(), "thresholds": params,
@@ -107,7 +106,7 @@ def figure(queries, params):
     fig.suptitle("Test split, descriptive risk-coverage; filled circles are the operating points frozen on "
                  "calibration data", fontsize=9)
     fig.tight_layout()
-    path = REPO_ROOT / "results" / "figures" / "test_risk_coverage.png"
+    path = OUT / "test_risk_coverage.png"
     fig.savefig(path, dpi=140)
 
 

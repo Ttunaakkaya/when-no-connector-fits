@@ -1,0 +1,10 @@
+part_a,family_a,split_a,part_b,family_b,split_b,bore_iou_over_quarter_turns
+rect_03,rect,calib,double_d_02,double_d,test,0.9534460609872398
+trapezoid_02,trapezoid,calib,chamfered_01,chamfered,test,0.9311528675664115
+trapezoid_02,trapezoid,calib,chamfered_02,chamfered,test,0.9311528675664114
+trapezoid_03,trapezoid,calib,chamfered_04,chamfered,test,0.9133688621979589
+rect_01,rect,calib,obround_01,obround,test,0.9106878253754501
+trapezoid_01,trapezoid,calib,chamfered_03,chamfered,test,0.9095817874410931
+circle_03,circle,test,dshape_01,dshape,dev,0.9021709744242954
+trapezoid_01,trapezoid,calib,chamfered_01,chamfered,test,0.9007908024285864
+trapezoid_01,trapezoid,calib,chamfered_02,chamfered,test,0.900790802428586

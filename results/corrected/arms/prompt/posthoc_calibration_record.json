@@ -1,0 +1,71 @@
+{
+  "status": "post-hoc family-balanced sensitivity, fitted on calibration only after test results were known",
+  "historical_record": "results/arms/prompt/arm_calibration_record.json",
+  "historical_record_sha256": "329657903f91292d315041c50162a03ef8d1f6f4337c7f68998214d6fb466c17",
+  "weighting": "family",
+  "weighting_definition": "Each family contributes unit total weight, divided equally among its observed regimes and then among queries in each family/regime cell. Rates divide weighted count sums. Unprefixed counts are raw integers; weighted_* fields are weighted sums, not object counts.",
+  "n_queries": 112,
+  "families": {
+    "ell": 24,
+    "gear": 12,
+    "notched": 16,
+    "rect": 20,
+    "square": 16,
+    "tee": 12,
+    "trapezoid": 12
+  },
+  "coverage_target_present": 0.7,
+  "original_thresholds": {
+    "B0": {},
+    "B1": {},
+    "U0": {},
+    "S1": {
+      "tau": 0.607197978754429
+    },
+    "S2": {
+      "tau": 0.6,
+      "delta": 0.0
+    }
+  },
+  "posthoc_thresholds": {
+    "B0": {},
+    "B1": {},
+    "U0": {},
+    "S1": {
+      "tau": 0.6076700578123778
+    },
+    "S2": {
+      "tau": 0.6,
+      "delta": 0.0
+    }
+  },
+  "S2_grid": {
+    "tau": [
+      0.0,
+      0.1,
+      0.2,
+      0.3,
+      0.4,
+      0.5,
+      0.6,
+      0.7,
+      0.8,
+      0.9,
+      1.0,
+      "S1 tau"
+    ],
+    "delta": [
+      0.0,
+      0.05,
+      0.1,
+      0.2,
+      0.3,
+      0.5
+    ]
+  },
+  "tie_breaking": "minimize weighted risk; then higher weighted correct yield, higher tau, higher delta",
+  "target_reached": {
+    "S1": true,
+    "S2": true
+  }
+}

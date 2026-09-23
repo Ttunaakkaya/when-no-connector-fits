@@ -1,4 +1,4 @@
-"""Stage 5: matched candidate blocks (master plan section 5).
+"""Stage 5: matched candidate blocks.
 
 For each eligible peg, four blocks share the peg, its renders and the candidate E2, so that only
 difficulty and mate presence change:

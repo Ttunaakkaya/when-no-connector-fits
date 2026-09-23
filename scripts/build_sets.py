@@ -23,7 +23,6 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image, ImageDraw
-from shapely import from_wkt
 
 from wncf import REPO_ROOT
 from wncf.geometry import label_pair
@@ -51,7 +50,6 @@ def main():
     labels, compat_sha = load_labels()
 
     blocks, log = build_blocks(parts, splits, labels)
-    peg_bores = {p.part_id: p.bore for p in parts}
     pegs = {p.part_id: p for p in parts}
 
     # independent re-verification: recompute every candidate label with the live oracle

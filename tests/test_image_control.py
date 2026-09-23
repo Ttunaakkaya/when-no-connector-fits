@@ -34,8 +34,9 @@ def tiles(proc, name):
 def test_stitched_tiles_are_the_render_itself(proc):
     from PIL import Image
 
+    stitched = tiles(proc, "cross_01_peg_v1.png")  # skips when the renders are not built
     raw = np.asarray(Image.open(R / "cross_01_peg_v1.png").convert("RGB"))
-    assert np.array_equal(tiles(proc, "cross_01_peg_v1.png"), raw)
+    assert np.array_equal(stitched, raw)
 
 
 def test_own_socket_reads_as_the_nominal_clearance(proc):

@@ -1,6 +1,7 @@
 """Score cache identity and the scoring driver's guards; no model is loaded."""
 
 import importlib.util
+import json
 
 import pytest
 
@@ -82,3 +83,72 @@ def test_driver_refuses_the_test_split_without_a_freeze(tmp_path, monkeypatch):
     monkeypatch.setattr(score, "FREEZE", stale)
     with pytest.raises(SystemExit):
         score.check_test_allowed(True)
+
+
+def test_driver_refuses_a_manifest_only_freeze(tmp_path, monkeypatch):
+    score = load_script("score")
+    from wncf.cache import file_sha
+
+    path = tmp_path / "freeze.json"
+    path.write_text(json.dumps({"blocks_sha256": file_sha(score.BLOCKS)}))
+    monkeypatch.setattr(score, "FREEZE", path)
+    with pytest.raises(SystemExit, match="calibration|configuration"):
+        score.check_test_allowed(True)
+
+
+@pytest.mark.parametrize("field,value", [("quant", "int8"), ("prompt_sha", "wrong"), ("revision", "wrong")])
+def test_scoring_and_evaluation_refuse_identity_drift(tmp_path, monkeypatch, field, value):
+    score, evaluator = load_script("score"), load_script("evaluate")
+    record = json.loads(score.FREEZE.read_text())
+    record["config"][field] = value
+    path = tmp_path / "freeze.json"
+    path.write_text(json.dumps(record))
+    monkeypatch.setattr(score, "FREEZE", path)
+    monkeypatch.setattr(evaluator, "FREEZE", path)
+    with pytest.raises(SystemExit, match="configuration"):
+        score.check_test_allowed(True)
+    with pytest.raises(SystemExit, match="configuration"):
+        evaluator.frozen_params()
+
+
+@pytest.mark.parametrize("field", ["candidates_sha256", "compat_sha256"])
+def test_driver_refuses_geometry_manifest_drift(tmp_path, monkeypatch, field):
+    score = load_script("score")
+    record = json.loads(score.FREEZE.read_text())
+    record[field] = "wrong"
+    path = tmp_path / "freeze.json"
+    path.write_text(json.dumps(record))
+    monkeypatch.setattr(score, "FREEZE", path)
+    with pytest.raises(SystemExit, match="manifest"):
+        score.check_test_allowed(True)
+
+
+def test_cache_recovers_only_incomplete_final_record_and_resumes(tmp_path):
+    path = tmp_path / "scores.jsonl"
+    completed = b'{"key": "complete", "p_yes": 0.7}\n'
+    path.write_bytes(completed + b'{"key": "interrupted"')
+    with pytest.warns(RuntimeWarning, match="incomplete final"):
+        cache = ScoreCache(path)
+    assert cache.get("complete")["p_yes"] == 0.7
+    assert path.read_bytes().startswith(completed)  # loading is read-only
+    cache.add("next", {"p_yes": 0.4})
+    reloaded = ScoreCache(path)
+    assert reloaded.get("complete")["p_yes"] == 0.7
+    assert reloaded.get("next")["p_yes"] == 0.4
+    assert any(p.read_bytes() == b'{"key": "interrupted"' for p in tmp_path.glob("*.incomplete"))
+
+
+@pytest.mark.parametrize("content", [b'{"key":\n', b'{"key":\n{"key": "valid"}\n'])
+def test_cache_rejects_corruption_in_complete_records(tmp_path, content):
+    path = tmp_path / "scores.jsonl"
+    path.write_bytes(content)
+    with pytest.raises(json.JSONDecodeError):
+        ScoreCache(path)
+
+
+def test_cache_handles_a_complete_record_without_final_newline(tmp_path):
+    path = tmp_path / "scores.jsonl"
+    path.write_text('{"key": "first", "p_yes": 0.1}')
+    cache = ScoreCache(path)
+    cache.add("next", {"p_yes": 0.2})
+    assert set(ScoreCache(path).rows) == {"first", "next"}
