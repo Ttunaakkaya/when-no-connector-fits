@@ -23,7 +23,7 @@ import csv
 import json
 import sys
 
-import wncf  # noqa: F401  (must precede transformers: pins the HF cache to the project's copy)
+import wncf  # noqa: F401  (must precede transformers: sets the configured HF cache paths)
 import matplotlib
 
 matplotlib.use("Agg")

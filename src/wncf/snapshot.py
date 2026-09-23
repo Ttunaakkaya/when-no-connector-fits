@@ -1,4 +1,4 @@
-"""Verified replay of the committed pilot scores, independent of GPU/model/image availability."""
+"""Verified replay of the committed experiment scores, independent of GPU/model/image availability."""
 
 from __future__ import annotations
 

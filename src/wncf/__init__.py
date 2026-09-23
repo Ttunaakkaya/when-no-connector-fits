@@ -1,8 +1,8 @@
 """When No Connector Fits (wncf).
 
 Importing this package pins the Hugging Face caches before transformers is imported.
-My user-level HF_HOME / HF_HUB_CACHE / HF_XET_CACHE point at D:, which is not always
-mounted, so the project uses its own cache unless WNCF_HF_HOME overrides it.
+The default is ~/.cache/huggingface; WNCF_HF_HOME overrides this location.
+HF_HOME, HF_HUB_CACHE and HF_XET_CACHE are set consistently beneath that location.
 """
 
 import os

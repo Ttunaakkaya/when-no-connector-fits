@@ -1,7 +1,8 @@
 """The frozen input configuration, in one importable place.
 
 Every scoring path for the core experiment reads this, so the driver cannot drift from the frozen setup.
-Changing any value invalidates cached scores, because the cache key covers all of it.
+Cache keys cover the scoring configuration and input-image hashes; the render-settings hash
+is checked separately by the provenance guard.
 """
 
 FROZEN = {
@@ -18,7 +19,7 @@ FROZEN = {
 # inside the arm, never able to change the frozen primary configuration. The appearance arm swaps the
 # neutral renders for an imitation of the paper's photos; the colours match scripts/replica_3dprint.py.
 PAPER_LOOK = {"background": "#141414", "peg": "#d8322e", "socket": "#8fdca4", "floor": "#0b0b0b"}
-# Each arm overrides exactly one thing: the appearance arm the renders, the prompt arm the prompt.
+# Each arm overrides one thing: appearance changes renders, prompt changes the prompt, int8 changes precision.
 ARM_OVERRIDES = {
     "appearance": {"renders": "data/renders/arm_appearance"},
     "prompt": {"prompt": "paper"},

@@ -11,7 +11,7 @@ whether they may decline:
   U0  diagnostic comparator: the highest normalized-score candidate, always selected. B0 and S1/S2
       rank by different quantities, so U0 separates the change of selector from the rejection itself.
 
-Validity (master section 7): a candidate response needs finite non-negative Yes/No masses summing to
+Validity: a candidate response needs finite non-negative Yes/No masses summing to
 more than 0 and at most 1 + 1e-6, a finite normalized score, an emitted-token probability in [0, 1],
 and an emitted token in the pinned Yes/No sets. If any candidate in a query fails, the whole query is
 `model_failure` and every rule defers; invalid output is never silently read as "No".

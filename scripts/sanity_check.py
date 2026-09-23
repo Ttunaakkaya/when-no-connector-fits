@@ -2,14 +2,15 @@
 
     uv run python scripts/sanity_check.py
 
-Dev families only. Four groups, reported separately and never pooled:
+Dev families only. Five groups, reported separately and never pooled:
   mate        each dev peg with its own socket                          (compatible)
   look_alike  each dev peg with the hard candidate its block uses       (incompatible)
   easy        each dev peg with the easy distractor E1 its block uses   (incompatible)
               a positive control added 22 September after the first run showed no separation between
               the other groups; the frozen configuration was not changed
   aperture    six dev pegs, bore inflated from +0.30 mm down to -1.20 mm relative to the peg
-  rotation    each dev peg with its own bore turned 90 degrees          (compatible by contract)
+  rotation    dev pegs with their own bore turned 90 degrees            (compatible by contract)
+              excludes bores with 90-degree symmetry
 
 Its purpose is to confirm that inputs, labels and outputs are auditable and that invalid-response
 handling works. No accuracy threshold gates progress, and no configuration search follows it.

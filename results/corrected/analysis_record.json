@@ -96,7 +96,7 @@
   "analysis_source_sha256": {
     "src/wncf/metrics.py": "5ebda71a764a62b4aa26c517ee4e3d8e8634edeaeab4c3312434b91b0c6c485b",
     "src/wncf/queries.py": "7fd466b57e7e225a5b79b9efa62162f5a10211ab8dbc1729e7fb1eedf857f557",
-    "src/wncf/snapshot.py": "3ae742e6c7943c4778f95c75ad0bbef58ec10741fb08f817b524f5f49915d7b7",
+    "src/wncf/snapshot.py": "f680d3f74cfe957296daf5901b5571f3e5838912d59c298505af8293ff3a90d8",
     "src/wncf/provenance.py": "a1f5a364d46555cb6f8d33422d60e61b432977f582bda5c9685bbf7e7ca2fb59",
     "scripts/reanalyze.py": "c1c298469519f48e145a162ae4fb855642a7e99423d365e732fe37523369bb3a"
   },

@@ -24,7 +24,7 @@ An independent, unofficial study of the visual matching stage of *Zero-Shot Peg 
 - I split the shape families before any scoring (seed 20260922): development (cross, dshape, ellipse, tube), calibration (ell, gear, notched, rect, square, tee, trapezoid) and test (chamfered, circle, double_d, keyed, obround, polygon, star).
 - I froze the primary configuration before any candidate block existed: `llava-hf/llava-onevision-qwen2-7b-ov-hf` at revision `0d50680527681998e456c7b78950205bedd8a068`, 4-bit NF4 decoder, per-image high-resolution tiling (about 0.068 mm per model pixel), the `qwen_1_5` chat wrapper, neutral grey renders, and a `controlled` prompt that spells out the geometric rules. With this prompt, B0 is the paper's ranking rule applied to my inputs, not a re-run of the authors' method. K = 3, so chance top-1 is 1/3.
 - S1 and S2 thresholds were fitted on calibration families only and frozen (`results/freeze/freeze_record.json`) before the single test pass (`results/test/test_pass_record.json`, which records the freeze hash).
-- Three sensitivity arms were declared in advance and run on calibration blocks only: paper-style appearance, the paper's prompt, and int8 precision. The appearance arm had a declared trigger (no ungated selector above chance on easy calibration sets), which fired.
+- Three sensitivity arms were declared in advance and run on calibration blocks only: paper-style appearance, the paper's prompt, and int8 precision. The appearance arm had a declared trigger (no ungated selector had a 95% family-bootstrap lower bound above chance on easy calibration sets), which fired.
 - The paper-prompt test run and a development sanity check under the paper's prompt were chosen after the primary test result was known, so they are exploratory.
 - "Predeclared" and "frozen" refer to the records in this repository; there is no external preregistration.
 
@@ -47,7 +47,7 @@ In the original pooled counts, B0 selected the mate in 24 of 58 mate-present set
 
 ### Sensitivity arms (calibration blocks, pooled counts)
 
-| Arm | What changes | B0 / U0 top-1 | Rejection at the arm's own calibration |
+| Arm | What changes | B0 / U0 top-1 | Acceptance at the arm's own calibration |
 |---|---|---:|---|
 | Primary | — | 0.36 / 0.46 | S1: mate-present 0.71, mate-absent 0.71 |
 | Appearance | red/green imitation of the paper's photos | 0.27 / 0.38 | S1: present 0.71, absent 0.79 |
@@ -89,7 +89,7 @@ I found and fixed these after the primary test result was known. The original re
 - One checkpoint, mainly in 4-bit precision. The paper does not state which LLaVA-OneVision size or preprocessing it used.
 - The results depend strongly on the prompt.
 - Seven test families give wide intervals, and blocks share candidates, so uncertainty comes only from resampling whole families.
-- The reconstruction touched three test-family templates (circle, obround, polygon) and three calibration templates, and some contours are very similar across splits (for example `rect_03` in calibration and `double_d_02` in test, contour IoU 0.95). The test split is therefore not a pristine holdout.
+- The reconstruction touched three test-family templates (circle, obround, polygon) and three calibration templates, and some contours are very similar across splits (for example `rect_03` in calibration and `double_d_02` in test, opening-contour IoU 0.95). The test split is therefore not a pristine holdout.
 - Fixed K = 3, quarter turns only, centroids aligned, and loose fits excluded from candidate sets. Normalized answer scores are not calibrated probabilities of fit, and a deferral is not a verified statement that no socket fits.
 
 ## Repository layout
