@@ -22,6 +22,7 @@ PAPER_LOOK = {"background": "#141414", "peg": "#d8322e", "socket": "#8fdca4", "f
 ARM_OVERRIDES = {
     "appearance": {"renders": "data/renders/arm_appearance"},
     "prompt": {"prompt": "paper"},
+    "int8": {"quant": "int8"},
 }
 ARM_RENDERS = {a: o["renders"] for a, o in ARM_OVERRIDES.items() if "renders" in o}
 ARM_SPLITS = frozenset({"calib"})

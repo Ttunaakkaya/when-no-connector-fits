@@ -1,0 +1,213 @@
+{
+  "frozen_s1_tau": 0.787984976280714,
+  "ladder_mm": [
+    0.3,
+    0.1,
+    0.0,
+    -0.1,
+    -0.3,
+    -0.6,
+    -1.2
+  ],
+  "splits": {
+    "calib": {
+      "n_pairs": 196,
+      "n_pegs": 28,
+      "auroc_p_yes": 0.562,
+      "accept_tau_compatible": 0.357,
+      "accept_tau_incompatible": 0.333,
+      "image_control_agreement": 1.0,
+      "per_peg_spearman_offset_vs_p_yes": {
+        "median": 0.214,
+        "share_positive": 0.714,
+        "n": 28
+      },
+      "per_rung": [
+        {
+          "offset_mm": 0.3,
+          "n": 28,
+          "labels": {
+            "compatible": 28
+          },
+          "mean_margin_mm": 0.266,
+          "mean_p_yes": 0.7874,
+          "accept_yes": 1.0,
+          "accept_tau": 0.5,
+          "image_says_fits": 1.0
+        },
+        {
+          "offset_mm": 0.1,
+          "n": 28,
+          "labels": {
+            "compatible": 28
+          },
+          "mean_margin_mm": 0.088,
+          "mean_p_yes": 0.7808,
+          "accept_yes": 1.0,
+          "accept_tau": 0.214,
+          "image_says_fits": 1.0
+        },
+        {
+          "offset_mm": 0.0,
+          "n": 28,
+          "labels": {
+            "ambiguous": 28
+          },
+          "mean_margin_mm": -0.0,
+          "mean_p_yes": 0.7803,
+          "accept_yes": 1.0,
+          "accept_tau": 0.321,
+          "image_says_fits": 0.893
+        },
+        {
+          "offset_mm": -0.1,
+          "n": 28,
+          "labels": {
+            "ambiguous": 28
+          },
+          "mean_margin_mm": -0.153,
+          "mean_p_yes": 0.7795,
+          "accept_yes": 1.0,
+          "accept_tau": 0.286,
+          "image_says_fits": 0.0
+        },
+        {
+          "offset_mm": -0.3,
+          "n": 28,
+          "labels": {
+            "incompatible": 28
+          },
+          "mean_margin_mm": -0.459,
+          "mean_p_yes": 0.7793,
+          "accept_yes": 1.0,
+          "accept_tau": 0.286,
+          "image_says_fits": 0.0
+        },
+        {
+          "offset_mm": -0.6,
+          "n": 28,
+          "labels": {
+            "incompatible": 28
+          },
+          "mean_margin_mm": -0.984,
+          "mean_p_yes": 0.7793,
+          "accept_yes": 1.0,
+          "accept_tau": 0.357,
+          "image_says_fits": 0.0
+        },
+        {
+          "offset_mm": -1.2,
+          "n": 28,
+          "labels": {
+            "incompatible": 28
+          },
+          "mean_margin_mm": -1.83,
+          "mean_p_yes": 0.7816,
+          "accept_yes": 1.0,
+          "accept_tau": 0.357,
+          "image_says_fits": 0.0
+        }
+      ]
+    },
+    "test": {
+      "n_pairs": 203,
+      "n_pegs": 29,
+      "auroc_p_yes": 0.499,
+      "accept_tau_compatible": 0.862,
+      "accept_tau_incompatible": 0.87,
+      "image_control_agreement": 1.0,
+      "per_peg_spearman_offset_vs_p_yes": {
+        "median": -0.036,
+        "share_positive": 0.345,
+        "n": 29
+      },
+      "per_rung": [
+        {
+          "offset_mm": 0.3,
+          "n": 29,
+          "labels": {
+            "compatible": 29
+          },
+          "mean_margin_mm": 0.292,
+          "mean_p_yes": 0.8117,
+          "accept_yes": 1.0,
+          "accept_tau": 0.862,
+          "image_says_fits": 1.0
+        },
+        {
+          "offset_mm": 0.1,
+          "n": 29,
+          "labels": {
+            "compatible": 29
+          },
+          "mean_margin_mm": 0.097,
+          "mean_p_yes": 0.8088,
+          "accept_yes": 1.0,
+          "accept_tau": 0.862,
+          "image_says_fits": 1.0
+        },
+        {
+          "offset_mm": 0.0,
+          "n": 29,
+          "labels": {
+            "ambiguous": 29
+          },
+          "mean_margin_mm": -0.001,
+          "mean_p_yes": 0.8087,
+          "accept_yes": 1.0,
+          "accept_tau": 0.862,
+          "image_says_fits": 0.586
+        },
+        {
+          "offset_mm": -0.1,
+          "n": 29,
+          "labels": {
+            "ambiguous": 24,
+            "incompatible": 5
+          },
+          "mean_margin_mm": -0.135,
+          "mean_p_yes": 0.81,
+          "accept_yes": 1.0,
+          "accept_tau": 0.862,
+          "image_says_fits": 0.0
+        },
+        {
+          "offset_mm": -0.3,
+          "n": 29,
+          "labels": {
+            "incompatible": 29
+          },
+          "mean_margin_mm": -0.403,
+          "mean_p_yes": 0.8091,
+          "accept_yes": 1.0,
+          "accept_tau": 0.862,
+          "image_says_fits": 0.0
+        },
+        {
+          "offset_mm": -0.6,
+          "n": 29,
+          "labels": {
+            "incompatible": 29
+          },
+          "mean_margin_mm": -0.806,
+          "mean_p_yes": 0.8109,
+          "accept_yes": 1.0,
+          "accept_tau": 0.862,
+          "image_says_fits": 0.0
+        },
+        {
+          "offset_mm": -1.2,
+          "n": 29,
+          "labels": {
+            "incompatible": 29
+          },
+          "mean_margin_mm": -1.524,
+          "mean_p_yes": 0.813,
+          "accept_yes": 1.0,
+          "accept_tau": 0.862,
+          "image_says_fits": 0.0
+        }
+      ]
+    }
+  }
+}

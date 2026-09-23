@@ -1,0 +1,101 @@
+{
+  "frozen_at": "2026-09-23T16:01:06",
+  "arm": "int8",
+  "primary": false,
+  "config": {
+    "model": "7b",
+    "quant": "int8",
+    "grouping": "flat",
+    "chat": "qwen_1_5",
+    "prompt": "controlled",
+    "views": [
+      "v1",
+      "v2"
+    ],
+    "render_settings_sha": "7de39322d57d",
+    "model_id": "llava-hf/llava-onevision-qwen2-7b-ov-hf",
+    "revision": "0d50680527681998e456c7b78950205bedd8a068",
+    "prompt_id": "controlled",
+    "prompt_sha": "cc6ff61ab5bd5027d9983f9ccd7937594f888f9c51ca60b11047ac12cade7100",
+    "versions": {
+      "torch": "2.14.0+cu130",
+      "transformers": "5.17.0",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "candidates_sha256": "5399b3101b9d4173e04f3e2570215277e21b0552826d9c086709c4ac5e33732c",
+  "compat_sha256": "c24f352d42ff18c184fca143594bb11ffc5081e8d966372d76a157a46125231f",
+  "calibration": {
+    "split": "calib",
+    "n_queries": 112,
+    "families": {
+      "ell": 24,
+      "gear": 12,
+      "notched": 16,
+      "rect": 20,
+      "square": 16,
+      "tee": 12,
+      "trapezoid": 12
+    },
+    "coverage_target_present": 0.7,
+    "S1": {
+      "tau": 0.7069557131837898,
+      "rule": "highest observed breakpoint meeting the target"
+    },
+    "S2": {
+      "tau": 0.7069557131837898,
+      "delta": 0.0,
+      "grid": {
+        "tau": [
+          0.0,
+          0.1,
+          0.2,
+          0.3,
+          0.4,
+          0.5,
+          0.6,
+          0.7,
+          0.8,
+          0.9,
+          1.0,
+          "S1 tau"
+        ],
+        "delta": [
+          0.0,
+          0.05,
+          0.1,
+          0.2,
+          0.3,
+          0.5
+        ]
+      },
+      "rule": "meet target, minimise accepted-choice risk; ties: higher yield, higher tau, higher delta"
+    },
+    "target_reached": {
+      "S1": true,
+      "S2": true
+    },
+    "one_policy_across_tiers": true
+  },
+  "appearance_arm_trigger": {
+    "definition": "fires if neither B0 nor U0 has a 95% family-bootstrap lower bound for present/easy top-1 above 1/3 on calibration blocks",
+    "results": {
+      "B0": {
+        "top1": 0.2857142857142857,
+        "ci95": [
+          0.22580645161290322,
+          0.3548387096774194
+        ]
+      },
+      "U0": {
+        "top1": 0.5357142857142857,
+        "ci95": [
+          0.34285714285714286,
+          0.75
+        ]
+      }
+    },
+    "fires": false,
+    "note": "descriptive only inside an arm"
+  }
+}

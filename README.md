@@ -52,6 +52,7 @@ Test results are also split by whether a query family's shape template was touch
 | Primary | — | 0.36 / 0.46 | S1: present coverage 0.71, absent false acceptance 0.71 |
 | Appearance (triggered by a declared chance-level rule) | red/green imitation of the paper's photos | 0.27 / 0.38 | S1: present 0.73, absent 0.79 |
 | Prompt | the paper's own prompt | **0.66 / 0.79** (easy 0.86 / 0.89, hard 0.46 / 0.68) | S2: present 0.74, absent 0.66 |
+| Precision | int8 instead of NF4 | 0.23 / 0.52 | S1: present 0.71, absent 0.62 |
 
 On calibration blocks the paper's prompt carries a strong ranking signal, look-alikes cut it by 20–40 points, and even then confidence separates mate-absent from mate-present sets only weakly. The `controlled` prompt, adopted during review to state the geometric contract, suppressed the ranking signal. The appearance arm did not rescue it.
 
@@ -83,7 +84,7 @@ With the paper's prompt, ranking transfers to unseen test families above chance 
 ### Diagnostics
 
 - **Information survives preprocessing.** An image-only containment check that segments the exact pixels the model receives (never the true polygons) recovers the oracle's fit decision on **240/240** dev and calibration pairs, including every look-alike, and tracks true margins to 0.002 mm on average near the boundary (`results/figures/image_control.png`). The model's failures are therefore not explained by lost image information.
-- **Flat aperture response (frozen configuration, dev).** As the opening shrinks from a comfortable fit to 1.2 mm of interference (about 18 model pixels), `p_yes` moves by at most 0.02 per peg (`results/figures/sanity_aperture.png`).
+- **No response to the opening size (RQ3, calibration and test families, frozen configuration).** Across 57 pegs, as each peg's own opening shrinks from 0.3 mm of clearance to 1.2 mm of interference per side, the model answers "Yes" every time and mean `p_yes` moves by less than 0.01. AUROC for fitting against non-fitting openings is 0.50 on test and 0.56 on calibration, while the image-only check on the same images agrees with the oracle on all 290 labelled rungs (`results/figures/aperture_series.png`). The dev ladders show the same under both prompts.
 - **Eight-shape diagnostic reconstruction.** Approximations of the paper's eight 3D-printed shapes, rendered in grey and in a red/green imitation and scored with the paper's prompt and ranking, reached 6/8 top-1 at best. That is the best of four configurations, n = 8, synthetic images and an unknown author checkpoint, so it is a diagnostic, **not** a reproduction of the paper's 7/8.
 - **Two confidence measures, two selectors.** The paper ranks by the probability of the emitted answer token; S1 and S2 rank by a normalized yes-probability summed over spellings. They disagree on the winner often enough that U0 is reported, so a change of selector is never mistaken for an effect of rejection.
 
