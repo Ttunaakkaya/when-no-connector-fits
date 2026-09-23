@@ -1,0 +1,50 @@
+{
+  "built": "2026-09-22",
+  "split_seed": 20260922,
+  "candidate_seed": 20260923,
+  "rules": {
+    "similarity": "max over quarter turns of IoU of openings, mm scale, own centroids",
+    "shrink_ladder_mm": [
+      0.2,
+      0.3,
+      0.5,
+      0.8
+    ],
+    "hard_max_margin_mm": -0.1,
+    "easy_max_pair_sim": 0.8,
+    "min_hard_sim": 0.6,
+    "min_difficulty_gap": 0.15,
+    "excluded": "ambiguous pairs and loose-compatible sockets; candidates stay within the peg's split"
+  },
+  "regimes": [
+    "present_easy",
+    "present_hard",
+    "absent_easy",
+    "absent_hard"
+  ],
+  "k": 3,
+  "n_pegs_total": 72,
+  "n_pegs_eligible": 71,
+  "n_blocks": 284,
+  "blocks_per_split": {
+    "test": 116,
+    "calib": 112,
+    "dev": 56
+  },
+  "eligible_per_split": {
+    "test": 29,
+    "calib": 28,
+    "dev": 14
+  },
+  "exclusions": {
+    "fewer than 3 mutually distinct incompatible sockets in test (pool 2)": 1
+  },
+  "hard_kind": {
+    "shrunk": 51,
+    "catalog": 20
+  },
+  "inputs": {
+    "catalog_sha256": "7000e899367b9903",
+    "compat_sha256": "c24f352d42ff18c1"
+  }
+}

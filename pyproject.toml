@@ -1,0 +1,54 @@
+[project]
+name = "wncf"
+version = "0.1.0"
+description = "When No Connector Fits: missing-mate evaluation of VLM peg-hole matching (unofficial re-implementation of Yajima et al., IROS 2025)"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "torch==2.14.0",
+    "torchvision",
+    "transformers>=4.45",
+    "accelerate",
+    "bitsandbytes>=0.43",
+    "huggingface-hub[hf-xet]",
+    "pillow",
+    "numpy",
+    "pandas",
+    "pyarrow",
+    "opencv-python",
+    "matplotlib",
+    "scikit-learn",
+    "tqdm",
+    "shapely>=2.1.2",
+    "trimesh>=5.1.0",
+    "mapbox-earcut>=2.1.0",
+    "scipy>=1.17.1",
+    "pyvista>=0.49.0",
+]
+
+[project.optional-dependencies]
+demo = ["streamlit"]
+
+[dependency-groups]
+dev = ["pytest"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wncf"]
+
+# CUDA 13.0 wheels: the laptop driver (591.74) supports CUDA 13.1.
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu130" }]
+torchvision = [{ index = "pytorch-cu130" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["gpu: needs the CUDA model weights (deselect with -m 'not gpu')"]

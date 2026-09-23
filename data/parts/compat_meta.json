@@ -1,0 +1,22 @@
+{
+  "contract": "constant-profile rigid parts; peg centroid on bore centroid; quarter turns 0/90/180/270 before straight insertion; off-centre fits are ambiguous so labels hold with or without a nudge",
+  "epsilon_mm": 0.05,
+  "loose_mm": 0.6,
+  "margin_cap_mm": 2.0,
+  "bisect_tol_mm": 0.001,
+  "shift_search_grid_mm": 0.1,
+  "quarter_turns": [
+    0,
+    90,
+    180,
+    270
+  ],
+  "catalog_sha256": "7000e899367b99036f79b4a73512bab5425aef8e0322a85ac8389283a2e16ae2",
+  "versions": {
+    "shapely": "2.1.2",
+    "geos": "3.13.1",
+    "scipy": "1.17.1"
+  },
+  "n_pairs": 5184,
+  "seconds": 37.3
+}

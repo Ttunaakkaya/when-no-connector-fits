@@ -1,0 +1,47 @@
+{
+  "status": "EXPLORATORY: run after the primary test pass was complete and known",
+  "evaluated_at": "2026-09-23T15:15:37",
+  "arm": "prompt",
+  "thresholds_from": "results\\arms\\prompt\\arm_calibration_record.json",
+  "thresholds": {
+    "B0": {},
+    "B1": {},
+    "U0": {},
+    "S1": {
+      "tau": 0.607197978754429
+    },
+    "S2": {
+      "tau": 0.6,
+      "delta": 0.0
+    }
+  },
+  "arm_record_sha256": "329657903f91292d315041c50162a03ef8d1f6f4337c7f68998214d6fb466c17",
+  "identity": {
+    "model_id": "llava-hf/llava-onevision-qwen2-7b-ov-hf",
+    "revision": "0d50680527681998e456c7b78950205bedd8a068",
+    "quant": "nf4",
+    "grouping": "flat",
+    "chat": "qwen_1_5",
+    "prompt_id": "paper",
+    "prompt_sha": "160106395827429d208e21b9ef07dcabc71131ad16b839611537f9489d99772e",
+    "views": [
+      "v1",
+      "v2"
+    ],
+    "versions": {
+      "torch": "2.14.0+cu130",
+      "transformers": "5.17.0",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "n_queries": 116,
+  "families": {
+    "chamfered": 16,
+    "circle": 20,
+    "double_d": 12,
+    "keyed": 20,
+    "obround": 12,
+    "polygon": 20,
+    "star": 16
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "evaluated_at": "2026-09-23T14:43:16",
+  "freeze_record_sha256": "532522071c4a47525c60f614fd35096da736b5ff8f747d30f1da1d3380dfa749",
+  "blocks_sha256": "c507298eedb13aa473fc9a8ae65225e90d8e368e54fd1fef358067180106a228",
+  "identity": {
+    "model_id": "llava-hf/llava-onevision-qwen2-7b-ov-hf",
+    "revision": "0d50680527681998e456c7b78950205bedd8a068",
+    "quant": "nf4",
+    "grouping": "flat",
+    "chat": "qwen_1_5",
+    "prompt_id": "controlled",
+    "prompt_sha": "cc6ff61ab5bd5027d9983f9ccd7937594f888f9c51ca60b11047ac12cade7100",
+    "views": [
+      "v1",
+      "v2"
+    ],
+    "versions": {
+      "torch": "2.14.0+cu130",
+      "transformers": "5.17.0",
+      "bitsandbytes": "0.50.2"
+    }
+  },
+  "thresholds": {
+    "B0": {},
+    "B1": {},
+    "U0": {},
+    "S1": {
+      "tau": 0.787984976280714
+    },
+    "S2": {
+      "tau": 0.787984976280714,
+      "delta": 0.0
+    }
+  },
+  "n_queries": 116,
+  "families": {
+    "chamfered": 16,
+    "circle": 20,
+    "double_d": 12,
+    "keyed": 20,
+    "obround": 12,
+    "polygon": 20,
+    "star": 16
+  },
+  "exposed_families": [
+    "circle",
+    "obround",
+    "polygon"
+  ]
+}

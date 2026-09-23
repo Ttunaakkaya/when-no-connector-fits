@@ -1,0 +1,20 @@
+# scripts/diagnose_vision.py, 22 Sep 2026, 7B NF4, dev parts only
+# note: a GroundedSwarm training run shared the GPU from 17:26, so pilot timings after that are not clean
+=== nested: description of ('cross_01', 'tube_03') ===
+1. Cross
+2. Square
+3. Circle
+4. Circle
+=== flat: description of ('cross_01', 'tube_03') ===
+1. Cross
+2. Circle
+3. Circle
+4. Rectangle
+=== p_yes: qwen_1_5 wrapper (as piloted) | llava-hf template | answer text ===
+cross_01    -> cross_01     0.592 (yes)  |  0.665 (yes)  |  'Yes'
+cross_01    -> tube_03      0.575 (yes)  |  0.635 (yes)  |  'Yes'
+ellipse_03  -> ellipse_03   0.580 (yes)  |  0.726 (yes)  |  'Yes'
+ellipse_03  -> dshape_04    0.523 (yes)  |  0.686 (yes)  |  'Yes'
+blank       -> blank        0.542 (yes)
+
+[exited with code 0]
